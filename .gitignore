@@ -18,3 +18,7 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# AWS test configuration (may contain sensitive info)
+.aws-test-config
+test_results_*
