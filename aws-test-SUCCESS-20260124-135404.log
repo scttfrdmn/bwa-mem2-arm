@@ -1,0 +1,1884 @@
+AWS Configuration Loaded:
+  Profile: aws
+  Region: us-west-2
+  Key: cws-aws-west-2-key
+  Security Group: sg-0e849a974f163c1d9 (graviton3-ssh)
+  Subnet: subnet-0a73ca94ed00cdaf9 (us-west-2a)
+
+Starting BWA-MEM2 ARM Correctness & Performance Test
+====================================================
+
+This will:
+  1. Launch 3 EC2 instances (Intel c7i, AMD c7a, ARM c7g)
+  2. Build BWA-MEM2 on each architecture
+  3. Run identical tests in parallel
+  4. Compare correctness and performance
+  5. Optionally terminate instances when done
+
+Estimated cost: ~$0.50-1.00
+Estimated time: 30-45 minutes
+
+
+[0;32m[2026-01-24 13:54:04][0m Starting BWA-MEM2 x86 vs ARM comparison test
+
+[0;32m[2026-01-24 13:54:04][0m Checking prerequisites...
+[0;32m[2026-01-24 13:54:05][0m Prerequisites OK
+[0;34m[INFO][0m Launching 7th generation instances for comparison:
+  - Intel: c7i.xlarge (Sapphire Rapids)
+  - AMD:   c7a.xlarge (Genoa)
+  - ARM:   c7g.xlarge (Graviton3)
+
+
+[0;34m[INFO][0m Instances launched:
+  Intel (c7i.xlarge): 34.219.19.153 (ID: [0;32m[2026-01-24 13:54:05][0m Launching intel instance (c7i.xlarge)... [0;34m[INFO][0m Using AMI: ami-0fcee47b1475c1af3 [0;32m[2026-01-24 13:54:08][0m Instance ID: i-062f726acbbeb434c [0;32m[2026-01-24 13:54:08][0m Waiting for instance to start... [0;32m[2026-01-24 13:54:25][0m intel instance ready at: 34.219.19.153 [0;32m[2026-01-24 13:54:25][0m Waiting for SSH... [0;32m[2026-01-24 13:54:26][0m SSH connection established i-062f726acbbeb434c)
+  AMD   (c7a.xlarge):   35.87.197.36   (ID: [0;32m[2026-01-24 13:54:26][0m Launching amd instance (c7a.xlarge)... [0;34m[INFO][0m Using AMI: ami-0fcee47b1475c1af3 [0;32m[2026-01-24 13:54:30][0m Instance ID: i-032f3336b3771f6e6 [0;32m[2026-01-24 13:54:30][0m Waiting for instance to start... [0;32m[2026-01-24 13:54:47][0m amd instance ready at: 35.87.197.36 [0;32m[2026-01-24 13:54:47][0m Waiting for SSH... [0;32m[2026-01-24 13:54:48][0m SSH connection established i-032f3336b3771f6e6)
+  ARM   (c7g.xlarge):   54.212.50.81   (ID: [0;32m[2026-01-24 13:54:48][0m Launching arm instance (c7g.xlarge)... [0;34m[INFO][0m Using AMI: ami-0cbac0f1d6260a580 [0;32m[2026-01-24 13:54:51][0m Instance ID: i-0de029b35059cc5ce [0;32m[2026-01-24 13:54:51][0m Waiting for instance to start... [0;32m[2026-01-24 13:55:08][0m arm instance ready at: 54.212.50.81 [0;32m[2026-01-24 13:55:08][0m Waiting for SSH... [0;32m[2026-01-24 13:55:09][0m SSH connection established i-0de029b35059cc5ce)
+
+[0;32m[2026-01-24 13:55:09][0m Setting up amd instance...
+[0;32m[2026-01-24 13:55:09][0m Setting up arm instance...
+[0;32m[2026-01-24 13:55:09][0m Setting up intel instance...
+Waiting for process with pid 2232 to finish.
+Last metadata expiration check: 0:00:02 ago on Sat Jan 24 21:55:09 2026.
+================================================================================
+WARNING:
+  A newer release of "Amazon Linux" is available.
+
+  Available Versions:
+
+  Version 2023.10.20260120:
+    Run the following command to upgrade to 2023.10.20260120:
+
+      dnf upgrade --releasever=2023.10.20260120
+
+    Release notes:
+     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.10.20260120.html
+
+================================================================================
+Amazon Linux 2023 Kernel Livepatch repository   279 kB/s |  30 kB     00:00    
+Dependencies resolved.
+Nothing to do.
+Complete!
+================================================================================
+WARNING:
+  A newer release of "Amazon Linux" is available.
+
+  Available Versions:
+
+  Version 2023.10.20260120:
+    Run the following command to upgrade to 2023.10.20260120:
+
+      dnf upgrade --releasever=2023.10.20260120
+
+    Release notes:
+     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.10.20260120.html
+
+================================================================================
+Last metadata expiration check: 0:00:03 ago on Sat Jan 24 21:55:09 2026.
+Package time-1.9-16.amzn2023.0.2.x86_64 is already installed.
+Dependencies resolved.
+Dependencies resolved.
+================================================================================
+ Package              Arch     Version                      Repository     Size
+================================================================================
+Installing:
+ gcc-c++              x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    15 M
+ git                  x86_64   2.50.1-1.amzn2023.0.1        amazonlinux    53 k
+ make                 x86_64   1:4.3-5.amzn2023.0.2         amazonlinux   534 k
+ zlib-devel           x86_64   1.2.11-33.amzn2023.0.5       amazonlinux    45 k
+Installing dependencies:
+ annobin-docs         noarch   12.69-1.amzn2023.0.1         amazonlinux    93 k
+ annobin-plugin-gcc   x86_64   12.69-1.amzn2023.0.1         amazonlinux   974 k
+ cpp                  x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    11 M
+ gc                   x86_64   8.0.4-5.amzn2023.0.2         amazonlinux   105 k
+ gcc                  x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    36 M
+ gcc-plugin-annobin   x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    38 k
+ git-core             x86_64   2.50.1-1.amzn2023.0.1        amazonlinux   4.9 M
+ git-core-doc         noarch   2.50.1-1.amzn2023.0.1        amazonlinux   2.8 M
+ glibc-devel          x86_64   2.34-231.amzn2023.0.1        amazonlinux    38 k
+ glibc-headers-x86    noarch   2.34-231.amzn2023.0.1        amazonlinux   444 k
+ guile22              x86_64   2.2.7-2.amzn2023.0.3         amazonlinux   6.4 M
+ kernel6.12-headers   x86_64   1:6.12.64-87.122.amzn2023    amazonlinux   1.5 M
+ libmpc               x86_64   1.2.1-2.amzn2023.0.2         amazonlinux    62 k
+ libstdc++-devel      x86_64   11.5.0-5.amzn2023.0.5        amazonlinux   2.2 M
+ libtool-ltdl         x86_64   2.4.7-1.amzn2023.0.3         amazonlinux    38 k
+ libxcrypt-devel      x86_64   4.4.33-7.amzn2023            amazonlinux    32 k
+ perl-Error           noarch   1:0.17029-5.amzn2023.0.2     amazonlinux    41 k
+ perl-File-Find       noarch   1.37-477.amzn2023.0.7        amazonlinux    25 k
+ perl-Git             noarch   2.50.1-1.amzn2023.0.1        amazonlinux    41 k
+ perl-TermReadKey     x86_64   2.38-9.amzn2023.0.2          amazonlinux    36 k
+ perl-lib             x86_64   0.65-477.amzn2023.0.7        amazonlinux    15 k
+
+Transaction Summary
+================================================================================
+Install  25 Packages
+
+Total download size: 82 M
+Installed size: 279 M
+Downloading Packages:
+Nothing to do.
+Complete!
+(1/25): annobin-docs-12.69-1.amzn2023.0.1.noarc 3.4 MB/s |  93 kB     00:00    
+(2/25): annobin-plugin-gcc-12.69-1.amzn2023.0.1  31 MB/s | 974 kB     00:00    
+(3/25): gc-8.0.4-5.amzn2023.0.2.x86_64.rpm      4.7 MB/s | 105 kB     00:00    
+(4/25): cpp-11.5.0-5.amzn2023.0.5.x86_64.rpm     76 MB/s |  11 MB     00:00    
+(5/25): gcc-plugin-annobin-11.5.0-5.amzn2023.0. 1.6 MB/s |  38 kB     00:00    
+(6/25): git-2.50.1-1.amzn2023.0.1.x86_64.rpm    2.5 MB/s |  53 kB     00:00    
+(7/25): gcc-c++-11.5.0-5.amzn2023.0.5.x86_64.rp  80 MB/s |  15 MB     00:00    
+Last metadata expiration check: 0:00:01 ago on Sat Jan 24 21:55:11 2026.
+(8/25): git-core-2.50.1-1.amzn2023.0.1.x86_64.r  76 MB/s | 4.9 MB     00:00    
+Package time-1.9-16.amzn2023.0.2.x86_64 is already installed.
+(9/25): git-core-doc-2.50.1-1.amzn2023.0.1.noar  70 MB/s | 2.8 MB     00:00    
+(10/25): glibc-devel-2.34-231.amzn2023.0.1.x86_ 1.5 MB/s |  38 kB     00:00    
+Dependencies resolved.
+(11/25): glibc-headers-x86-2.34-231.amzn2023.0.  15 MB/s | 444 kB     00:00    
+================================================================================
+ Package              Arch     Version                      Repository     Size
+================================================================================
+Installing:
+ gcc-c++              x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    15 M
+ git                  x86_64   2.50.1-1.amzn2023.0.1        amazonlinux    53 k
+ make                 x86_64   1:4.3-5.amzn2023.0.2         amazonlinux   534 k
+ zlib-devel           x86_64   1.2.11-33.amzn2023.0.5       amazonlinux    45 k
+Installing dependencies:
+ annobin-docs         noarch   12.69-1.amzn2023.0.1         amazonlinux    93 k
+ annobin-plugin-gcc   x86_64   12.69-1.amzn2023.0.1         amazonlinux   974 k
+ cpp                  x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    11 M
+ gc                   x86_64   8.0.4-5.amzn2023.0.2         amazonlinux   105 k
+ gcc                  x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    36 M
+ gcc-plugin-annobin   x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    38 k
+ git-core             x86_64   2.50.1-1.amzn2023.0.1        amazonlinux   4.9 M
+ git-core-doc         noarch   2.50.1-1.amzn2023.0.1        amazonlinux   2.8 M
+ glibc-devel          x86_64   2.34-231.amzn2023.0.1        amazonlinux    38 k
+ glibc-headers-x86    noarch   2.34-231.amzn2023.0.1        amazonlinux   444 k
+ guile22              x86_64   2.2.7-2.amzn2023.0.3         amazonlinux   6.4 M
+ kernel6.12-headers   x86_64   1:6.12.64-87.122.amzn2023    amazonlinux   1.5 M
+ libmpc               x86_64   1.2.1-2.amzn2023.0.2         amazonlinux    62 k
+ libstdc++-devel      x86_64   11.5.0-5.amzn2023.0.5        amazonlinux   2.2 M
+ libtool-ltdl         x86_64   2.4.7-1.amzn2023.0.3         amazonlinux    38 k
+ libxcrypt-devel      x86_64   4.4.33-7.amzn2023            amazonlinux    32 k
+ perl-Error           noarch   1:0.17029-5.amzn2023.0.2     amazonlinux    41 k
+ perl-File-Find       noarch   1.37-477.amzn2023.0.7        amazonlinux    25 k
+ perl-Git             noarch   2.50.1-1.amzn2023.0.1        amazonlinux    41 k
+ perl-TermReadKey     x86_64   2.38-9.amzn2023.0.2          amazonlinux    36 k
+ perl-lib             x86_64   0.65-477.amzn2023.0.7        amazonlinux    15 k
+
+Transaction Summary
+================================================================================
+Install  25 Packages
+
+Total download size: 82 M
+Installed size: 279 M
+Downloading Packages:
+(12/25): kernel6.12-headers-6.12.64-87.122.amzn  45 MB/s | 1.5 MB     00:00    
+(13/25): guile22-2.2.7-2.amzn2023.0.3.x86_64.rp  80 MB/s | 6.4 MB     00:00    
+(14/25): libmpc-1.2.1-2.amzn2023.0.2.x86_64.rpm 2.6 MB/s |  62 kB     00:00    
+(15/25): libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_ 1.6 MB/s |  38 kB     00:00    
+(1/25): annobin-docs-12.69-1.amzn2023.0.1.noarc 3.1 MB/s |  93 kB     00:00    
+(16/25): libstdc++-devel-11.5.0-5.amzn2023.0.5.  64 MB/s | 2.2 MB     00:00    
+(2/25): annobin-plugin-gcc-12.69-1.amzn2023.0.1  26 MB/s | 974 kB     00:00    
+(17/25): libxcrypt-devel-4.4.33-7.amzn2023.x86_ 1.3 MB/s |  32 kB     00:00    
+(3/25): gc-8.0.4-5.amzn2023.0.2.x86_64.rpm      3.4 MB/s | 105 kB     00:00    
+(18/25): gcc-11.5.0-5.amzn2023.0.5.x86_64.rpm    79 MB/s |  36 MB     00:00    
+(19/25): perl-Error-0.17029-5.amzn2023.0.2.noar 488 kB/s |  41 kB     00:00    
+(20/25): make-4.3-5.amzn2023.0.2.x86_64.rpm     5.1 MB/s | 534 kB     00:00    
+(4/25): cpp-11.5.0-5.amzn2023.0.5.x86_64.rpm     74 MB/s |  11 MB     00:00    
+(21/25): perl-Git-2.50.1-1.amzn2023.0.1.noarch. 1.7 MB/s |  41 kB     00:00    
+(22/25): perl-File-Find-1.37-477.amzn2023.0.7.n 955 kB/s |  25 kB     00:00    
+(23/25): perl-TermReadKey-2.38-9.amzn2023.0.2.x 1.5 MB/s |  36 kB     00:00    
+(5/25): gcc-plugin-annobin-11.5.0-5.amzn2023.0. 1.3 MB/s |  38 kB     00:00    
+(24/25): perl-lib-0.65-477.amzn2023.0.7.x86_64. 658 kB/s |  15 kB     00:00    
+(25/25): zlib-devel-1.2.11-33.amzn2023.0.5.x86_ 1.7 MB/s |  45 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           141 MB/s |  82 MB     00:00     
+(6/25): git-2.50.1-1.amzn2023.0.1.x86_64.rpm    2.2 MB/s |  53 kB     00:00    
+(7/25): gcc-c++-11.5.0-5.amzn2023.0.5.x86_64.rp  79 MB/s |  15 MB     00:00    
+(8/25): git-core-2.50.1-1.amzn2023.0.1.x86_64.r  75 MB/s | 4.9 MB     00:00    
+(9/25): git-core-doc-2.50.1-1.amzn2023.0.1.noar  75 MB/s | 2.8 MB     00:00    
+(10/25): glibc-devel-2.34-231.amzn2023.0.1.x86_ 1.5 MB/s |  38 kB     00:00    
+(11/25): glibc-headers-x86-2.34-231.amzn2023.0.  14 MB/s | 444 kB     00:00    
+(12/25): kernel6.12-headers-6.12.64-87.122.amzn  53 MB/s | 1.5 MB     00:00    
+(13/25): guile22-2.2.7-2.amzn2023.0.3.x86_64.rp  79 MB/s | 6.4 MB     00:00    
+(14/25): libmpc-1.2.1-2.amzn2023.0.2.x86_64.rpm 2.0 MB/s |  62 kB     00:00    
+(15/25): libstdc++-devel-11.5.0-5.amzn2023.0.5.  72 MB/s | 2.2 MB     00:00    
+(16/25): libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_ 1.2 MB/s |  38 kB     00:00    
+(17/25): gcc-11.5.0-5.amzn2023.0.5.x86_64.rpm    81 MB/s |  36 MB     00:00    
+(18/25): libxcrypt-devel-4.4.33-7.amzn2023.x86_ 389 kB/s |  32 kB     00:00    
+(19/25): make-4.3-5.amzn2023.0.2.x86_64.rpm     6.3 MB/s | 534 kB     00:00    
+(20/25): perl-Error-0.17029-5.amzn2023.0.2.noar 1.8 MB/s |  41 kB     00:00    
+(21/25): perl-File-Find-1.37-477.amzn2023.0.7.n 913 kB/s |  25 kB     00:00    
+(22/25): perl-Git-2.50.1-1.amzn2023.0.1.noarch. 1.4 MB/s |  41 kB     00:00    
+(23/25): perl-TermReadKey-2.38-9.amzn2023.0.2.x 1.6 MB/s |  36 kB     00:00    
+(24/25): perl-lib-0.65-477.amzn2023.0.7.x86_64. 568 kB/s |  15 kB     00:00    
+(25/25): zlib-devel-1.2.11-33.amzn2023.0.5.x86_ 1.6 MB/s |  45 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           142 MB/s |  82 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : libmpc-1.2.1-2.amzn2023.0.2.x86_64                    1/25 
+  Installing       : git-core-2.50.1-1.amzn2023.0.1.x86_64                 2/25  Preparing        :                                                        1/1 
+  Installing       : libmpc-1.2.1-2.amzn2023.0.2.x86_64                    1/25 
+  Installing       : git-core-2.50.1-1.amzn2023.0.1.x86_64                 2/25 
+  Installing       : git-core-doc-2.50.1-1.amzn2023.0.1.noarch             3/25 
+  Installing       : cpp-11.5.0-5.amzn2023.0.5.x86_64                      4/25 
+  Installing       : perl-lib-0.65-477.amzn2023.0.7.x86_64                 5/25 
+  Installing       : perl-TermReadKey-2.38-9.amzn2023.0.2.x86_64           6/25 
+  Installing       : perl-File-Find-1.37-477.amzn2023.0.7.noarch           7/25 
+  Installing       : perl-Error-1:0.17029-5.amzn2023.0.2.noarch            8/25 
+  Installing       : perl-Git-2.50.1-1.amzn2023.0.1.noarch                 9/25 
+  Installing       : git-2.50.1-1.amzn2023.0.1.x86_64                     10/25 
+  Installing       : libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64             11/25 
+  Installing       : libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64         12/25 
+  Installing       : git-core-doc-2.50.1-1.amzn2023.0.1.noarch             3/25 
+  Installing       : cpp-11.5.0-5.amzn2023.0.5.x86_64                      4/25 
+  Installing       : perl-lib-0.65-477.amzn2023.0.7.x86_64                 5/25 
+  Installing       : perl-TermReadKey-2.38-9.amzn2023.0.2.x86_64           6/25 
+  Installing       : perl-File-Find-1.37-477.amzn2023.0.7.noarch           7/25 
+  Installing       : perl-Error-1:0.17029-5.amzn2023.0.2.noarch            8/25 
+  Installing       : perl-Git-2.50.1-1.amzn2023.0.1.noarch                 9/25 
+  Installing       : git-2.50.1-1.amzn2023.0.1.x86_64                     10/25 
+  Installing       : libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64             11/25 
+  Installing       : kernel6.12-headers-1:6.12.64-87.122.amzn2023.x86_6   13/25 
+  Installing       : libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64         12/25 
+  Installing       : glibc-headers-x86-2.34-231.amzn2023.0.1.noarch       14/25 
+  Installing       : libxcrypt-devel-4.4.33-7.amzn2023.x86_64             15/25 
+  Installing       : glibc-devel-2.34-231.amzn2023.0.1.x86_64             16/25 
+  Installing       : gc-8.0.4-5.amzn2023.0.2.x86_64                       17/25 
+  Installing       : kernel6.12-headers-1:6.12.64-87.122.amzn2023.x86_6   13/25 
+  Installing       : guile22-2.2.7-2.amzn2023.0.3.x86_64                  18/25 
+  Installing       : make-1:4.3-5.amzn2023.0.2.x86_64                     19/25 
+  Installing       : glibc-headers-x86-2.34-231.amzn2023.0.1.noarch       14/25 
+  Installing       : libxcrypt-devel-4.4.33-7.amzn2023.x86_64             15/25 
+  Installing       : glibc-devel-2.34-231.amzn2023.0.1.x86_64             16/25 
+  Installing       : gc-8.0.4-5.amzn2023.0.2.x86_64                       17/25 
+  Installing       : gcc-11.5.0-5.amzn2023.0.5.x86_64                     20/25 
+  Running scriptlet: gcc-11.5.0-5.amzn2023.0.5.x86_64                     20/25 
+  Installing       : guile22-2.2.7-2.amzn2023.0.3.x86_64                  18/25 
+  Installing       : annobin-docs-12.69-1.amzn2023.0.1.noarch             21/25 
+  Installing       : annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64       22/25 
+  Running scriptlet: annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64       22/25 
+  Installing       : make-1:4.3-5.amzn2023.0.2.x86_64                     19/25 
+  Installing       : gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                 23/25 
+  Installing       : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64      24/25 
+  Installing       : zlib-devel-1.2.11-33.amzn2023.0.5.x86_64             25/25 
+  Running scriptlet: zlib-devel-1.2.11-33.amzn2023.0.5.x86_64             25/25 
+  Installing       : gcc-11.5.0-5.amzn2023.0.5.x86_64                     20/25 
+  Running scriptlet: gcc-11.5.0-5.amzn2023.0.5.x86_64                     20/25 
+  Installing       : annobin-docs-12.69-1.amzn2023.0.1.noarch             21/25 
+  Installing       : annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64       22/25 
+  Running scriptlet: annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64       22/25 
+  Installing       : gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                 23/25 
+  Installing       : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64      24/25 
+  Installing       : zlib-devel-1.2.11-33.amzn2023.0.5.x86_64             25/25 
+  Running scriptlet: zlib-devel-1.2.11-33.amzn2023.0.5.x86_64             25/25 
+  Verifying        : annobin-docs-12.69-1.amzn2023.0.1.noarch              1/25 
+  Verifying        : annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64        2/25 
+  Verifying        : cpp-11.5.0-5.amzn2023.0.5.x86_64                      3/25 
+  Verifying        : gc-8.0.4-5.amzn2023.0.2.x86_64                        4/25 
+  Verifying        : gcc-11.5.0-5.amzn2023.0.5.x86_64                      5/25 
+  Verifying        : gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                  6/25 
+  Verifying        : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64       7/25 
+  Verifying        : git-2.50.1-1.amzn2023.0.1.x86_64                      8/25 
+  Verifying        : git-core-2.50.1-1.amzn2023.0.1.x86_64                 9/25 
+  Verifying        : git-core-doc-2.50.1-1.amzn2023.0.1.noarch            10/25 
+  Verifying        : glibc-devel-2.34-231.amzn2023.0.1.x86_64             11/25 
+  Verifying        : glibc-headers-x86-2.34-231.amzn2023.0.1.noarch       12/25 
+  Verifying        : guile22-2.2.7-2.amzn2023.0.3.x86_64                  13/25 
+  Verifying        : kernel6.12-headers-1:6.12.64-87.122.amzn2023.x86_6   14/25 
+  Verifying        : libmpc-1.2.1-2.amzn2023.0.2.x86_64                   15/25 
+  Verifying        : libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64         16/25 
+  Verifying        : libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64             17/25 
+  Verifying        : libxcrypt-devel-4.4.33-7.amzn2023.x86_64             18/25 
+  Verifying        : make-1:4.3-5.amzn2023.0.2.x86_64                     19/25 
+  Verifying        : perl-Error-1:0.17029-5.amzn2023.0.2.noarch           20/25 
+  Verifying        : perl-File-Find-1.37-477.amzn2023.0.7.noarch          21/25 
+  Verifying        : perl-Git-2.50.1-1.amzn2023.0.1.noarch                22/25 
+  Verifying        : perl-TermReadKey-2.38-9.amzn2023.0.2.x86_64          23/25 
+  Verifying        : perl-lib-0.65-477.amzn2023.0.7.x86_64                24/25 
+  Verifying        : zlib-devel-1.2.11-33.amzn2023.0.5.x86_64             25/25================================================================================
+WARNING:
+  A newer release of "Amazon Linux" is available.
+
+  Available Versions:
+
+  Version 2023.10.20260120:
+    Run the following command to upgrade to 2023.10.20260120:
+
+      dnf upgrade --releasever=2023.10.20260120
+
+    Release notes:
+     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.10.20260120.html
+
+================================================================================
+ 
+
+Installed:
+  annobin-docs-12.69-1.amzn2023.0.1.noarch                                      
+  annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64                                
+  cpp-11.5.0-5.amzn2023.0.5.x86_64                                              
+  gc-8.0.4-5.amzn2023.0.2.x86_64                                                
+  gcc-11.5.0-5.amzn2023.0.5.x86_64                                              
+  gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                                          
+  gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64                               
+  git-2.50.1-1.amzn2023.0.1.x86_64                                              
+  git-core-2.50.1-1.amzn2023.0.1.x86_64                                         
+  git-core-doc-2.50.1-1.amzn2023.0.1.noarch                                     
+  glibc-devel-2.34-231.amzn2023.0.1.x86_64                                      
+  glibc-headers-x86-2.34-231.amzn2023.0.1.noarch                                
+  guile22-2.2.7-2.amzn2023.0.3.x86_64                                           
+  kernel6.12-headers-1:6.12.64-87.122.amzn2023.x86_64                           
+  libmpc-1.2.1-2.amzn2023.0.2.x86_64                                            
+  libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64                                  
+  libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64                                      
+  libxcrypt-devel-4.4.33-7.amzn2023.x86_64                                      
+  make-1:4.3-5.amzn2023.0.2.x86_64                                              
+  perl-Error-1:0.17029-5.amzn2023.0.2.noarch                                    
+  perl-File-Find-1.37-477.amzn2023.0.7.noarch                                   
+  perl-Git-2.50.1-1.amzn2023.0.1.noarch                                         
+  perl-TermReadKey-2.38-9.amzn2023.0.2.x86_64                                   
+  perl-lib-0.65-477.amzn2023.0.7.x86_64                                         
+  zlib-devel-1.2.11-33.amzn2023.0.5.x86_64                                      
+
+Complete!
+Cloning into 'bwa-mem2'...
+ 
+  Verifying        : annobin-docs-12.69-1.amzn2023.0.1.noarch              1/25 
+  Verifying        : annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64        2/25 
+  Verifying        : cpp-11.5.0-5.amzn2023.0.5.x86_64                      3/25 
+  Verifying        : gc-8.0.4-5.amzn2023.0.2.x86_64                        4/25 
+  Verifying        : gcc-11.5.0-5.amzn2023.0.5.x86_64                      5/25 
+  Verifying        : gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                  6/25 
+  Verifying        : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64       7/25 
+  Verifying        : git-2.50.1-1.amzn2023.0.1.x86_64                      8/25 
+  Verifying        : git-core-2.50.1-1.amzn2023.0.1.x86_64                 9/25 
+  Verifying        : git-core-doc-2.50.1-1.amzn2023.0.1.noarch            10/25 
+  Verifying        : glibc-devel-2.34-231.amzn2023.0.1.x86_64             11/25 
+  Verifying        : glibc-headers-x86-2.34-231.amzn2023.0.1.noarch       12/25 
+  Verifying        : guile22-2.2.7-2.amzn2023.0.3.x86_64                  13/25 
+  Verifying        : kernel6.12-headers-1:6.12.64-87.122.amzn2023.x86_6   14/25 
+  Verifying        : libmpc-1.2.1-2.amzn2023.0.2.x86_64                   15/25 
+  Verifying        : libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64         16/25 
+  Verifying        : libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64             17/25 
+  Verifying        : libxcrypt-devel-4.4.33-7.amzn2023.x86_64             18/25 
+  Verifying        : make-1:4.3-5.amzn2023.0.2.x86_64                     19/25 
+  Verifying        : perl-Error-1:0.17029-5.amzn2023.0.2.noarch           20/25 
+  Verifying        : perl-File-Find-1.37-477.amzn2023.0.7.noarch          21/25 
+  Verifying        : perl-Git-2.50.1-1.amzn2023.0.1.noarch                22/25 
+  Verifying        : perl-TermReadKey-2.38-9.amzn2023.0.2.x86_64          23/25 
+  Verifying        : perl-lib-0.65-477.amzn2023.0.7.x86_64                24/25 
+  Verifying        : zlib-devel-1.2.11-33.amzn2023.0.5.x86_64             25/25================================================================================
+WARNING:
+  A newer release of "Amazon Linux" is available.
+
+  Available Versions:
+
+  Version 2023.10.20260120:
+    Run the following command to upgrade to 2023.10.20260120:
+
+      dnf upgrade --releasever=2023.10.20260120
+
+    Release notes:
+     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.10.20260120.html
+
+================================================================================
+ 
+
+Installed:
+  annobin-docs-12.69-1.amzn2023.0.1.noarch                                      
+  annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64                                
+  cpp-11.5.0-5.amzn2023.0.5.x86_64                                              
+  gc-8.0.4-5.amzn2023.0.2.x86_64                                                
+  gcc-11.5.0-5.amzn2023.0.5.x86_64                                              
+  gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                                          
+  gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64                               
+  git-2.50.1-1.amzn2023.0.1.x86_64                                              
+  git-core-2.50.1-1.amzn2023.0.1.x86_64                                         
+  git-core-doc-2.50.1-1.amzn2023.0.1.noarch                                     
+  glibc-devel-2.34-231.amzn2023.0.1.x86_64                                      
+  glibc-headers-x86-2.34-231.amzn2023.0.1.noarch                                
+  guile22-2.2.7-2.amzn2023.0.3.x86_64                                           
+  kernel6.12-headers-1:6.12.64-87.122.amzn2023.x86_64                           
+  libmpc-1.2.1-2.amzn2023.0.2.x86_64                                            
+  libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64                                  
+  libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64                                      
+  libxcrypt-devel-4.4.33-7.amzn2023.x86_64                                      
+  make-1:4.3-5.amzn2023.0.2.x86_64                                              
+  perl-Error-1:0.17029-5.amzn2023.0.2.noarch                                    
+  perl-File-Find-1.37-477.amzn2023.0.7.noarch                                   
+  perl-Git-2.50.1-1.amzn2023.0.1.noarch                                         
+  perl-TermReadKey-2.38-9.amzn2023.0.2.x86_64                                   
+  perl-lib-0.65-477.amzn2023.0.7.x86_64                                         
+  zlib-devel-1.2.11-33.amzn2023.0.5.x86_64                                      
+
+Complete!
+Cloning into 'bwa-mem2'...
+Switched to a new branch 'arm-graviton-optimization'
+branch 'arm-graviton-optimization' set up to track 'origin/arm-graviton-optimization'.
+Submodule 'ext/safestringlib' (https://github.com/intel/safestringlib.git) registered for path 'ext/safestringlib'
+Cloning into '/home/ec2-user/bwa-mem2/ext/safestringlib'...
+Submodule path 'ext/safestringlib': checked out 'f5b47df51e0733e487e55691005e77a1f04787da'
+Building BWA-MEM2...
+mkdir -p ext/safestringlib/obj ext/safestringlib/objtest
+make -C ext/safestringlib CC=gcc libsafestring.a
+make[1]: Entering directory '/home/ec2-user/bwa-mem2/ext/safestringlib'
+gcc -z noexecstack -z relo -z now -c -o obj/abort_handler_s.o safeclib/abort_handler_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+In file included from safeclib/abort_handler_s.c:32:
+safeclib/abort_handler_s.c: In function ‘abort_handler_s’:
+safeclib/safeclib_private.h:80:23: warning: implicit declaration of function ‘abort’ [-Wimplicit-function-declaration]
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+safeclib/abort_handler_s.c:33:1: note: include ‘<stdlib.h>’ or provide a declaration of ‘abort’
+   32 | #include "safeclib_private.h"
+  +++ |+#include <stdlib.h>
+   33 | 
+In file included from safeclib/abort_handler_s.c:32:
+safeclib/safeclib_private.h:80:23: warning: incompatible implicit declaration of built-in function ‘abort’ [-Wbuiltin-declaration-mismatch]
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+safeclib/safeclib_private.h:80:23: note: include ‘<stdlib.h>’ or provide a declaration of ‘abort’
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+gcc -z noexecstack -z relo -z now -c -o obj/stpcpy_s.o safeclib/stpcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+branch 'arm-graviton-optimization' set up to track 'origin/arm-graviton-optimization'.
+Switched to a new branch 'arm-graviton-optimization'
+gcc -z noexecstack -z relo -z now -c -o obj/strlastsame_s.o safeclib/strlastsame_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+Submodule 'ext/safestringlib' (https://github.com/intel/safestringlib.git) registered for path 'ext/safestringlib'
+Cloning into '/home/ec2-user/bwa-mem2/ext/safestringlib'...
+gcc -z noexecstack -z relo -z now -c -o obj/ignore_handler_s.o safeclib/ignore_handler_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/stpncpy_s.o safeclib/stpncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strljustify_s.o safeclib/strljustify_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp16_s.o safeclib/memcmp16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcasecmp_s.o safeclib/strcasecmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+safeclib/strcasecmp_s.c: In function ‘strcasecmp_s’:
+safeclib/strcasecmp_s.c:132:13: warning: implicit declaration of function ‘toupper’ [-Wimplicit-function-declaration]
+  132 |         if (toupper(*udest) != toupper(*usrc)) {
+      |             ^~~~~~~
+safeclib/strcasecmp_s.c:35:1: note: include ‘<ctype.h>’ or provide a declaration of ‘toupper’
+   34 | #include "safe_str_lib.h"
+  +++ |+#include <ctype.h>
+   35 | 
+gcc -z noexecstack -z relo -z now -c -o obj/strncat_s.o safeclib/strncat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp32_s.o safeclib/memcmp32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcasestr_s.o safeclib/strcasestr_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+safeclib/strcasestr_s.c: In function ‘strcasestr_s’:
+safeclib/strcasestr_s.c:156:17: warning: implicit declaration of function ‘toupper’ [-Wimplicit-function-declaration]
+  156 |             if (toupper(dest[i]) != toupper(src[i])) {
+      |                 ^~~~~~~
+safeclib/strcasestr_s.c:35:1: note: include ‘<ctype.h>’ or provide a declaration of ‘toupper’
+   34 | #include "safe_str_lib.h"
+  +++ |+#include <ctype.h>
+   35 | 
+gcc -z noexecstack -z relo -z now -c -o obj/strncpy_s.o safeclib/strncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp_s.o safeclib/memcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcat_s.o safeclib/strcat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strnlen_s.o safeclib/strnlen_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy16_s.o safeclib/memcpy16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcmpfld_s.o safeclib/strcmpfld_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strnterminate_s.o safeclib/strnterminate_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+Submodule path 'ext/safestringlib': checked out 'f5b47df51e0733e487e55691005e77a1f04787da'
+Building BWA-MEM2...
+mkdir -p ext/safestringlib/obj ext/safestringlib/objtest
+make -C ext/safestringlib CC=gcc libsafestring.a
+make[1]: Entering directory '/home/ec2-user/bwa-mem2/ext/safestringlib'
+gcc -z noexecstack -z relo -z now -c -o obj/abort_handler_s.o safeclib/abort_handler_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy32_s.o safeclib/memcpy32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+In file included from safeclib/abort_handler_s.c:32:
+safeclib/abort_handler_s.c: In function ‘abort_handler_s’:
+safeclib/safeclib_private.h:80:23: warning: implicit declaration of function ‘abort’ [-Wimplicit-function-declaration]
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+safeclib/abort_handler_s.c:33:1: note: include ‘<stdlib.h>’ or provide a declaration of ‘abort’
+   32 | #include "safeclib_private.h"
+  +++ |+#include <stdlib.h>
+   33 | 
+In file included from safeclib/abort_handler_s.c:32:
+safeclib/safeclib_private.h:80:23: warning: incompatible implicit declaration of built-in function ‘abort’ [-Wbuiltin-declaration-mismatch]
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+safeclib/safeclib_private.h:80:23: note: include ‘<stdlib.h>’ or provide a declaration of ‘abort’
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+gcc -z noexecstack -z relo -z now -c -o obj/strcmp_s.o safeclib/strcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/stpcpy_s.o safeclib/stpcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strpbrk_s.o safeclib/strpbrk_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastsame_s.o safeclib/strlastsame_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy_s.o safeclib/memcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/ignore_handler_s.o safeclib/ignore_handler_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/stpncpy_s.o safeclib/stpncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfldin_s.o safeclib/strcpyfldin_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strljustify_s.o safeclib/strljustify_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strprefix_s.o safeclib/strprefix_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp16_s.o safeclib/memcmp16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove16_s.o safeclib/memmove16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcasecmp_s.o safeclib/strcasecmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfldout_s.o safeclib/strcpyfldout_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+safeclib/strcasecmp_s.c: In function ‘strcasecmp_s’:
+safeclib/strcasecmp_s.c:132:13: warning: implicit declaration of function ‘toupper’ [-Wimplicit-function-declaration]
+  132 |         if (toupper(*udest) != toupper(*usrc)) {
+      |             ^~~~~~~
+safeclib/strcasecmp_s.c:35:1: note: include ‘<ctype.h>’ or provide a declaration of ‘toupper’
+   34 | #include "safe_str_lib.h"
+  +++ |+#include <ctype.h>
+   35 | 
+gcc -z noexecstack -z relo -z now -c -o obj/strncat_s.o safeclib/strncat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strremovews_s.o safeclib/strremovews_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp32_s.o safeclib/memcmp32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove32_s.o safeclib/memmove32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcasestr_s.o safeclib/strcasestr_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfld_s.o safeclib/strcpyfld_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+safeclib/strcasestr_s.c: In function ‘strcasestr_s’:
+safeclib/strcasestr_s.c:156:17: warning: implicit declaration of function ‘toupper’ [-Wimplicit-function-declaration]
+  156 |             if (toupper(dest[i]) != toupper(src[i])) {
+      |                 ^~~~~~~
+safeclib/strcasestr_s.c:35:1: note: include ‘<ctype.h>’ or provide a declaration of ‘toupper’
+   34 | #include "safe_str_lib.h"
+  +++ |+#include <ctype.h>
+   35 | 
+gcc -z noexecstack -z relo -z now -c -o obj/strncpy_s.o safeclib/strncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strspn_s.o safeclib/strspn_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp_s.o safeclib/memcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove_s.o safeclib/memmove_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcat_s.o safeclib/strcat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpy_s.o safeclib/strcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strnlen_s.o safeclib/strnlen_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strstr_s.o safeclib/strstr_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy16_s.o safeclib/memcpy16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/mem_primitives_lib.o safeclib/mem_primitives_lib.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcmpfld_s.o safeclib/strcmpfld_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strnterminate_s.o safeclib/strnterminate_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy32_s.o safeclib/memcpy32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcmp_s.o safeclib/strcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcspn_s.o safeclib/strcspn_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strpbrk_s.o safeclib/strpbrk_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtok_s.o safeclib/strtok_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy_s.o safeclib/memcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfldin_s.o safeclib/strcpyfldin_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstchar_s.o safeclib/strfirstchar_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtolowercase_s.o safeclib/strtolowercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strprefix_s.o safeclib/strprefix_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove16_s.o safeclib/memmove16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset16_s.o safeclib/memset16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfldout_s.o safeclib/strcpyfldout_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstdiff_s.o safeclib/strfirstdiff_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtouppercase_s.o safeclib/strtouppercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strremovews_s.o safeclib/strremovews_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset32_s.o safeclib/memset32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove32_s.o safeclib/memmove32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstsame_s.o safeclib/strfirstsame_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfld_s.o safeclib/strcpyfld_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strzero_s.o safeclib/strzero_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strspn_s.o safeclib/strspn_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset_s.o safeclib/memset_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove_s.o safeclib/memmove_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisalphanumeric_s.o safeclib/strisalphanumeric_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpy_s.o safeclib/strcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcpcpy_s.o safeclib/wcpcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strstr_s.o safeclib/strstr_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero16_s.o safeclib/memzero16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/mem_primitives_lib.o safeclib/mem_primitives_lib.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisascii_s.o safeclib/strisascii_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcscat_s.o safeclib/wcscat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero32_s.o safeclib/memzero32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisdigit_s.o safeclib/strisdigit_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcspn_s.o safeclib/strcspn_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcscpy_s.o safeclib/wcscpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtok_s.o safeclib/strtok_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero_s.o safeclib/memzero_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstchar_s.o safeclib/strfirstchar_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strishex_s.o safeclib/strishex_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtolowercase_s.o safeclib/strtolowercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsncat_s.o safeclib/wcsncat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset16_s.o safeclib/memset16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strislowercase_s.o safeclib/strislowercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstdiff_s.o safeclib/strfirstdiff_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsncpy_s.o safeclib/wcsncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtouppercase_s.o safeclib/strtouppercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset32_s.o safeclib/memset32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/safe_mem_constraint.o safeclib/safe_mem_constraint.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstsame_s.o safeclib/strfirstsame_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strismixedcase_s.o safeclib/strismixedcase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strzero_s.o safeclib/strzero_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsnlen_s.o safeclib/wcsnlen_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset_s.o safeclib/memset_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strispassword_s.o safeclib/strispassword_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisalphanumeric_s.o safeclib/strisalphanumeric_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemcmp_s.o safeclib/wmemcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcpcpy_s.o safeclib/wcpcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/safe_str_constraint.o safeclib/safe_str_constraint.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero16_s.o safeclib/memzero16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisuppercase_s.o safeclib/strisuppercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisascii_s.o safeclib/strisascii_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemcpy_s.o safeclib/wmemcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcscat_s.o safeclib/wcscat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastchar_s.o safeclib/strlastchar_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero32_s.o safeclib/memzero32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemmove_s.o safeclib/wmemmove_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisdigit_s.o safeclib/strisdigit_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/snprintf_support.o safeclib/snprintf_support.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcscpy_s.o safeclib/wcscpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero_s.o safeclib/memzero_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strishex_s.o safeclib/strishex_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastdiff_s.o safeclib/strlastdiff_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsncat_s.o safeclib/wcsncat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemset_s.o safeclib/wmemset_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strislowercase_s.o safeclib/strislowercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+ar rcs libsafestring.a obj/abort_handler_s.o obj/stpcpy_s.o obj/strlastsame_s.o obj/ignore_handler_s.o obj/stpncpy_s.o obj/strljustify_s.o obj/memcmp16_s.o obj/strcasecmp_s.o obj/strncat_s.o obj/memcmp32_s.o obj/strcasestr_s.o obj/strncpy_s.o obj/memcmp_s.o obj/strcat_s.o obj/strnlen_s.o obj/memcpy16_s.o obj/strcmpfld_s.o obj/strnterminate_s.o obj/memcpy32_s.o obj/strcmp_s.o obj/strpbrk_s.o obj/memcpy_s.o obj/strcpyfldin_s.o obj/strprefix_s.o obj/memmove16_s.o obj/strcpyfldout_s.o obj/strremovews_s.o obj/memmove32_s.o obj/strcpyfld_s.o obj/strspn_s.o obj/memmove_s.o obj/strcpy_s.o obj/strstr_s.o obj/mem_primitives_lib.o obj/strcspn_s.o obj/strtok_s.o obj/strfirstchar_s.o obj/strtolowercase_s.o obj/memset16_s.o obj/strfirstdiff_s.o obj/strtouppercase_s.o obj/memset32_s.o obj/strfirstsame_s.o obj/strzero_s.o obj/memset_s.o obj/strisalphanumeric_s.o obj/wcpcpy_s.o obj/memzero16_s.o obj/strisascii_s.o obj/wcscat_s.o obj/memzero32_s.o obj/strisdigit_s.o obj/wcscpy_s.o obj/memzero_s.o obj/strishex_s.o obj/wcsncat_s.o obj/strislowercase_s.o obj/wcsncpy_s.o obj/safe_mem_constraint.o obj/strismixedcase_s.o obj/wcsnlen_s.o obj/strispassword_s.o obj/wmemcmp_s.o obj/safe_str_constraint.o obj/strisuppercase_s.o obj/wmemcpy_s.o obj/strlastchar_s.o obj/wmemmove_s.o obj/snprintf_support.o obj/strlastdiff_s.o obj/wmemset_s.o
+gcc -z noexecstack -z relo -z now -c -o obj/wcsncpy_s.o safeclib/wcsncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+make[1]: Leaving directory '/home/ec2-user/bwa-mem2/ext/safestringlib'
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/fastmap.cpp -o src/fastmap.o
+gcc -z noexecstack -z relo -z now -c -o obj/safe_mem_constraint.o safeclib/safe_mem_constraint.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strismixedcase_s.o safeclib/strismixedcase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsnlen_s.o safeclib/wcsnlen_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strispassword_s.o safeclib/strispassword_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+src/fastmap.cpp:52:51: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   52 | void __cpuid(unsigned int i, unsigned int cpuid[4]) {
+      |                                                   ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+src/fastmap.cpp:61:21: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   61 |     __cpuid(0, cpuid);
+      |                     ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+src/fastmap.cpp:67:21: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   67 |     __cpuid(1, cpuid);
+      |                     ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+src/fastmap.cpp:76:25: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   76 |         __cpuid(4, cpuid);
+      |                         ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+gcc -z noexecstack -z relo -z now -c -o obj/wmemcmp_s.o safeclib/wmemcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/safe_str_constraint.o safeclib/safe_str_constraint.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisuppercase_s.o safeclib/strisuppercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemcpy_s.o safeclib/wmemcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastchar_s.o safeclib/strlastchar_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemmove_s.o safeclib/wmemmove_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/snprintf_support.o safeclib/snprintf_support.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastdiff_s.o safeclib/strlastdiff_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemset_s.o safeclib/wmemset_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+ar rcs libsafestring.a obj/abort_handler_s.o obj/stpcpy_s.o obj/strlastsame_s.o obj/ignore_handler_s.o obj/stpncpy_s.o obj/strljustify_s.o obj/memcmp16_s.o obj/strcasecmp_s.o obj/strncat_s.o obj/memcmp32_s.o obj/strcasestr_s.o obj/strncpy_s.o obj/memcmp_s.o obj/strcat_s.o obj/strnlen_s.o obj/memcpy16_s.o obj/strcmpfld_s.o obj/strnterminate_s.o obj/memcpy32_s.o obj/strcmp_s.o obj/strpbrk_s.o obj/memcpy_s.o obj/strcpyfldin_s.o obj/strprefix_s.o obj/memmove16_s.o obj/strcpyfldout_s.o obj/strremovews_s.o obj/memmove32_s.o obj/strcpyfld_s.o obj/strspn_s.o obj/memmove_s.o obj/strcpy_s.o obj/strstr_s.o obj/mem_primitives_lib.o obj/strcspn_s.o obj/strtok_s.o obj/strfirstchar_s.o obj/strtolowercase_s.o obj/memset16_s.o obj/strfirstdiff_s.o obj/strtouppercase_s.o obj/memset32_s.o obj/strfirstsame_s.o obj/strzero_s.o obj/memset_s.o obj/strisalphanumeric_s.o obj/wcpcpy_s.o obj/memzero16_s.o obj/strisascii_s.o obj/wcscat_s.o obj/memzero32_s.o obj/strisdigit_s.o obj/wcscpy_s.o obj/memzero_s.o obj/strishex_s.o obj/wcsncat_s.o obj/strislowercase_s.o obj/wcsncpy_s.o obj/safe_mem_constraint.o obj/strismixedcase_s.o obj/wcsnlen_s.o obj/strispassword_s.o obj/wmemcmp_s.o obj/safe_str_constraint.o obj/strisuppercase_s.o obj/wmemcpy_s.o obj/strlastchar_s.o obj/wmemmove_s.o obj/snprintf_support.o obj/strlastdiff_s.o obj/wmemset_s.o
+make[1]: Leaving directory '/home/ec2-user/bwa-mem2/ext/safestringlib'
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/fastmap.cpp -o src/fastmap.o
+In file included from src/bwamem.h:47,
+                 from src/fastmap.h:45,
+                 from src/fastmap.cpp:39:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+src/fastmap.cpp: At global scope:
+src/fastmap.cpp:52:6: error: variable or field ‘__cpuid’ declared void
+   52 | void __cpuid(unsigned int i, unsigned int cpuid[4]) {
+      |      ^~~~~~~
+src/fastmap.cpp:53:26: error: ‘cpuid’ was not declared in this scope
+   53 |     platform_cpuid((int*)cpuid, (int)i);
+      |                          ^~~~~
+src/fastmap.cpp:53:38: error: ‘i’ was not declared in this scope
+   53 |     platform_cpuid((int*)cpuid, (int)i);
+      |                                      ^
+src/fastmap.cpp:53:40: error: expected ‘}’ before ‘;’ token
+   53 |     platform_cpuid((int*)cpuid, (int)i);
+      |                                        ^
+src/fastmap.cpp:52:53: note: to match this ‘{’
+   52 | void __cpuid(unsigned int i, unsigned int cpuid[4]) {
+      |                                                     ^
+src/fastmap.cpp:54:1: error: expected declaration before ‘}’ token
+   54 | }
+      | ^
+src/fastmap.cpp: In function ‘int HTStatus()’:
+src/fastmap.cpp:61:5: error: ‘__cpuid’ was not declared in this scope; did you mean ‘cpuid’?
+   61 |     __cpuid(0, cpuid);
+      |     ^~~~~~~
+      |     cpuid
+src/fastmap.cpp:52:51: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   52 | void __cpuid(unsigned int i, unsigned int cpuid[4]) {
+      |                                                   ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+src/fastmap.cpp:61:21: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   61 |     __cpuid(0, cpuid);
+      |                     ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+src/fastmap.cpp:67:21: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   67 |     __cpuid(1, cpuid);
+      |                     ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+src/fastmap.cpp:76:25: error: macro "__cpuid" requires 5 arguments, but only 2 given
+   76 |         __cpuid(4, cpuid);
+      |                         ^
+In file included from src/platform_compat.h:54,
+                 from src/fastmap.cpp:41:
+/usr/lib/gcc/x86_64-amazon-linux/11/include/cpuid.h:227: note: macro "__cpuid" defined here
+  227 | #define __cpuid(level, a, b, c, d)                                      \
+      | 
+make: *** [Makefile:99: src/fastmap.o] Error 1
+In file included from src/bwamem.h:47,
+                 from src/fastmap.h:45,
+                 from src/fastmap.cpp:39:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+src/fastmap.cpp: At global scope:
+src/fastmap.cpp:52:6: error: variable or field ‘__cpuid’ declared void
+   52 | void __cpuid(unsigned int i, unsigned int cpuid[4]) {
+      |      ^~~~~~~
+src/fastmap.cpp:53:26: error: ‘cpuid’ was not declared in this scope
+   53 |     platform_cpuid((int*)cpuid, (int)i);
+      |                          ^~~~~
+src/fastmap.cpp:53:38: error: ‘i’ was not declared in this scope
+   53 |     platform_cpuid((int*)cpuid, (int)i);
+      |                                      ^
+src/fastmap.cpp:53:40: error: expected ‘}’ before ‘;’ token
+   53 |     platform_cpuid((int*)cpuid, (int)i);
+      |                                        ^
+src/fastmap.cpp:52:53: note: to match this ‘{’
+   52 | void __cpuid(unsigned int i, unsigned int cpuid[4]) {
+      |                                                     ^
+src/fastmap.cpp:54:1: error: expected declaration before ‘}’ token
+   54 | }
+      | ^
+src/fastmap.cpp: In function ‘int HTStatus()’:
+src/fastmap.cpp:61:5: error: ‘__cpuid’ was not declared in this scope; did you mean ‘cpuid’?
+   61 |     __cpuid(0, cpuid);
+      |     ^~~~~~~
+      |     cpuid
+make: *** [Makefile:99: src/fastmap.o] Error 1
+Amazon Linux 2023 Kernel Livepatch repository   245 kB/s |  28 kB     00:00    
+================================================================================
+WARNING:
+  A newer release of "Amazon Linux" is available.
+
+  Available Versions:
+
+  Version 2023.10.20260120:
+    Run the following command to upgrade to 2023.10.20260120:
+
+      dnf upgrade --releasever=2023.10.20260120
+
+    Release notes:
+     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.10.20260120.html
+
+================================================================================
+Dependencies resolved.
+Nothing to do.
+Complete!
+Last metadata expiration check: 0:00:01 ago on Sat Jan 24 21:55:40 2026.
+Package time-1.9-16.amzn2023.0.2.aarch64 is already installed.
+Dependencies resolved.
+================================================================================
+ Package              Arch      Version                     Repository     Size
+================================================================================
+Installing:
+ gcc-c++              aarch64   11.5.0-5.amzn2023.0.5       amazonlinux    12 M
+ git                  aarch64   2.50.1-1.amzn2023.0.1       amazonlinux    53 k
+ make                 aarch64   1:4.3-5.amzn2023.0.2        amazonlinux   530 k
+ zlib-devel           aarch64   1.2.11-33.amzn2023.0.5      amazonlinux    45 k
+Installing dependencies:
+ annobin-docs         noarch    12.69-1.amzn2023.0.1        amazonlinux    93 k
+ annobin-plugin-gcc   aarch64   12.69-1.amzn2023.0.1        amazonlinux   973 k
+ cpp                  aarch64   11.5.0-5.amzn2023.0.5       amazonlinux    10 M
+ gc                   aarch64   8.0.4-5.amzn2023.0.2        amazonlinux   102 k
+ gcc                  aarch64   11.5.0-5.amzn2023.0.5       amazonlinux    31 M
+ gcc-plugin-annobin   aarch64   11.5.0-5.amzn2023.0.5       amazonlinux    37 k
+ git-core             aarch64   2.50.1-1.amzn2023.0.1       amazonlinux   5.1 M
+ git-core-doc         noarch    2.50.1-1.amzn2023.0.1       amazonlinux   2.8 M
+ glibc-devel          aarch64   2.34-231.amzn2023.0.1       amazonlinux   451 k
+ guile22              aarch64   2.2.7-2.amzn2023.0.3        amazonlinux   6.4 M
+ kernel6.12-headers   aarch64   1:6.12.64-87.122.amzn2023   amazonlinux   1.5 M
+ libmpc               aarch64   1.2.1-2.amzn2023.0.2        amazonlinux    63 k
+ libstdc++-devel      aarch64   11.5.0-5.amzn2023.0.5       amazonlinux   2.8 M
+ libtool-ltdl         aarch64   2.4.7-1.amzn2023.0.3        amazonlinux    38 k
+ libxcrypt-devel      aarch64   4.4.33-7.amzn2023           amazonlinux    32 k
+ perl-Error           noarch    1:0.17029-5.amzn2023.0.2    amazonlinux    41 k
+ perl-File-Find       noarch    1.37-477.amzn2023.0.7       amazonlinux    25 k
+ perl-Git             noarch    2.50.1-1.amzn2023.0.1       amazonlinux    41 k
+ perl-TermReadKey     aarch64   2.38-9.amzn2023.0.2         amazonlinux    36 k
+ perl-lib             aarch64   0.65-477.amzn2023.0.7       amazonlinux    15 k
+
+Transaction Summary
+================================================================================
+Install  24 Packages
+
+Total download size: 75 M
+Installed size: 257 M
+Downloading Packages:
+(1/24): annobin-docs-12.69-1.amzn2023.0.1.noarc 2.2 MB/s |  93 kB     00:00    
+(2/24): annobin-plugin-gcc-12.69-1.amzn2023.0.1  18 MB/s | 973 kB     00:00    
+(3/24): gc-8.0.4-5.amzn2023.0.2.aarch64.rpm     3.8 MB/s | 102 kB     00:00    
+(4/24): cpp-11.5.0-5.amzn2023.0.5.aarch64.rpm    74 MB/s |  10 MB     00:00    
+(5/24): gcc-plugin-annobin-11.5.0-5.amzn2023.0. 1.4 MB/s |  37 kB     00:00    
+(6/24): git-2.50.1-1.amzn2023.0.1.aarch64.rpm   2.0 MB/s |  53 kB     00:00    
+(7/24): gcc-c++-11.5.0-5.amzn2023.0.5.aarch64.r  81 MB/s |  12 MB     00:00    
+(8/24): git-core-2.50.1-1.amzn2023.0.1.aarch64.  78 MB/s | 5.1 MB     00:00    
+(9/24): git-core-doc-2.50.1-1.amzn2023.0.1.noar  61 MB/s | 2.8 MB     00:00    
+(10/24): glibc-devel-2.34-231.amzn2023.0.1.aarc  15 MB/s | 451 kB     00:00    
+(11/24): kernel6.12-headers-6.12.64-87.122.amzn  38 MB/s | 1.5 MB     00:00    
+(12/24): libmpc-1.2.1-2.amzn2023.0.2.aarch64.rp 2.6 MB/s |  63 kB     00:00    
+(13/24): guile22-2.2.7-2.amzn2023.0.3.aarch64.r  58 MB/s | 6.4 MB     00:00    
+(14/24): gcc-11.5.0-5.amzn2023.0.5.aarch64.rpm   82 MB/s |  31 MB     00:00    
+(15/24): libtool-ltdl-2.4.7-1.amzn2023.0.3.aarc 699 kB/s |  38 kB     00:00    
+(16/24): libstdc++-devel-11.5.0-5.amzn2023.0.5.  32 MB/s | 2.8 MB     00:00    
+(17/24): libxcrypt-devel-4.4.33-7.amzn2023.aarc 1.2 MB/s |  32 kB     00:00    
+(18/24): make-4.3-5.amzn2023.0.2.aarch64.rpm     18 MB/s | 530 kB     00:00    
+(19/24): perl-Error-0.17029-5.amzn2023.0.2.noar 1.7 MB/s |  41 kB     00:00    
+(20/24): perl-File-Find-1.37-477.amzn2023.0.7.n 1.2 MB/s |  25 kB     00:00    
+(21/24): perl-Git-2.50.1-1.amzn2023.0.1.noarch. 1.5 MB/s |  41 kB     00:00    
+(22/24): perl-TermReadKey-2.38-9.amzn2023.0.2.a 1.4 MB/s |  36 kB     00:00    
+(23/24): perl-lib-0.65-477.amzn2023.0.7.aarch64 526 kB/s |  15 kB     00:00    
+(24/24): zlib-devel-1.2.11-33.amzn2023.0.5.aarc 1.7 MB/s |  45 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           136 MB/s |  75 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : libmpc-1.2.1-2.amzn2023.0.2.aarch64                   1/24 
+  Installing       : git-core-2.50.1-1.amzn2023.0.1.aarch64                2/24 
+  Installing       : git-core-doc-2.50.1-1.amzn2023.0.1.noarch             3/24 
+  Installing       : cpp-11.5.0-5.amzn2023.0.5.aarch64                     4/24 
+  Installing       : perl-lib-0.65-477.amzn2023.0.7.aarch64                5/24 
+  Installing       : perl-TermReadKey-2.38-9.amzn2023.0.2.aarch64          6/24 
+  Installing       : perl-File-Find-1.37-477.amzn2023.0.7.noarch           7/24 
+  Installing       : perl-Error-1:0.17029-5.amzn2023.0.2.noarch            8/24 
+  Installing       : perl-Git-2.50.1-1.amzn2023.0.1.noarch                 9/24 
+  Installing       : git-2.50.1-1.amzn2023.0.1.aarch64                    10/24 
+  Installing       : libtool-ltdl-2.4.7-1.amzn2023.0.3.aarch64            11/24 
+  Installing       : libstdc++-devel-11.5.0-5.amzn2023.0.5.aarch64        12/24 
+  Installing       : kernel6.12-headers-1:6.12.64-87.122.amzn2023.aarch   13/24 
+  Installing       : libxcrypt-devel-4.4.33-7.amzn2023.aarch64            14/24 
+  Installing       : glibc-devel-2.34-231.amzn2023.0.1.aarch64            15/24 
+  Installing       : gc-8.0.4-5.amzn2023.0.2.aarch64                      16/24 
+  Installing       : guile22-2.2.7-2.amzn2023.0.3.aarch64                 17/24 
+  Installing       : make-1:4.3-5.amzn2023.0.2.aarch64                    18/24 
+  Installing       : gcc-11.5.0-5.amzn2023.0.5.aarch64                    19/24 
+  Running scriptlet: gcc-11.5.0-5.amzn2023.0.5.aarch64                    19/24 
+  Installing       : annobin-docs-12.69-1.amzn2023.0.1.noarch             20/24 
+  Installing       : annobin-plugin-gcc-12.69-1.amzn2023.0.1.aarch64      21/24 
+  Running scriptlet: annobin-plugin-gcc-12.69-1.amzn2023.0.1.aarch64      21/24 
+  Installing       : gcc-c++-11.5.0-5.amzn2023.0.5.aarch64                22/24 
+  Installing       : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.aarch64     23/24 
+  Installing       : zlib-devel-1.2.11-33.amzn2023.0.5.aarch64            24/24 
+  Running scriptlet: zlib-devel-1.2.11-33.amzn2023.0.5.aarch64            24/24 
+  Verifying        : annobin-docs-12.69-1.amzn2023.0.1.noarch              1/24 
+  Verifying        : annobin-plugin-gcc-12.69-1.amzn2023.0.1.aarch64       2/24 
+  Verifying        : cpp-11.5.0-5.amzn2023.0.5.aarch64                     3/24 
+  Verifying        : gc-8.0.4-5.amzn2023.0.2.aarch64                       4/24 
+  Verifying        : gcc-11.5.0-5.amzn2023.0.5.aarch64                     5/24 
+  Verifying        : gcc-c++-11.5.0-5.amzn2023.0.5.aarch64                 6/24 
+  Verifying        : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.aarch64      7/24 
+  Verifying        : git-2.50.1-1.amzn2023.0.1.aarch64                     8/24 
+  Verifying        : git-core-2.50.1-1.amzn2023.0.1.aarch64                9/24 
+  Verifying        : git-core-doc-2.50.1-1.amzn2023.0.1.noarch            10/24 
+  Verifying        : glibc-devel-2.34-231.amzn2023.0.1.aarch64            11/24 
+  Verifying        : guile22-2.2.7-2.amzn2023.0.3.aarch64                 12/24 
+  Verifying        : kernel6.12-headers-1:6.12.64-87.122.amzn2023.aarch   13/24 
+  Verifying        : libmpc-1.2.1-2.amzn2023.0.2.aarch64                  14/24 
+  Verifying        : libstdc++-devel-11.5.0-5.amzn2023.0.5.aarch64        15/24 
+  Verifying        : libtool-ltdl-2.4.7-1.amzn2023.0.3.aarch64            16/24 
+  Verifying        : libxcrypt-devel-4.4.33-7.amzn2023.aarch64            17/24 
+  Verifying        : make-1:4.3-5.amzn2023.0.2.aarch64                    18/24 
+  Verifying        : perl-Error-1:0.17029-5.amzn2023.0.2.noarch           19/24 
+  Verifying        : perl-File-Find-1.37-477.amzn2023.0.7.noarch          20/24 
+  Verifying        : perl-Git-2.50.1-1.amzn2023.0.1.noarch                21/24 
+  Verifying        : perl-TermReadKey-2.38-9.amzn2023.0.2.aarch64         22/24 
+  Verifying        : perl-lib-0.65-477.amzn2023.0.7.aarch64               23/24 
+  Verifying        : zlib-devel-1.2.11-33.amzn2023.0.5.aarch64            24/24================================================================================
+WARNING:
+  A newer release of "Amazon Linux" is available.
+
+  Available Versions:
+
+  Version 2023.10.20260120:
+    Run the following command to upgrade to 2023.10.20260120:
+
+      dnf upgrade --releasever=2023.10.20260120
+
+    Release notes:
+     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.10.20260120.html
+
+================================================================================
+ 
+
+Installed:
+  annobin-docs-12.69-1.amzn2023.0.1.noarch                                      
+  annobin-plugin-gcc-12.69-1.amzn2023.0.1.aarch64                               
+  cpp-11.5.0-5.amzn2023.0.5.aarch64                                             
+  gc-8.0.4-5.amzn2023.0.2.aarch64                                               
+  gcc-11.5.0-5.amzn2023.0.5.aarch64                                             
+  gcc-c++-11.5.0-5.amzn2023.0.5.aarch64                                         
+  gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.aarch64                              
+  git-2.50.1-1.amzn2023.0.1.aarch64                                             
+  git-core-2.50.1-1.amzn2023.0.1.aarch64                                        
+  git-core-doc-2.50.1-1.amzn2023.0.1.noarch                                     
+  glibc-devel-2.34-231.amzn2023.0.1.aarch64                                     
+  guile22-2.2.7-2.amzn2023.0.3.aarch64                                          
+  kernel6.12-headers-1:6.12.64-87.122.amzn2023.aarch64                          
+  libmpc-1.2.1-2.amzn2023.0.2.aarch64                                           
+  libstdc++-devel-11.5.0-5.amzn2023.0.5.aarch64                                 
+  libtool-ltdl-2.4.7-1.amzn2023.0.3.aarch64                                     
+  libxcrypt-devel-4.4.33-7.amzn2023.aarch64                                     
+  make-1:4.3-5.amzn2023.0.2.aarch64                                             
+  perl-Error-1:0.17029-5.amzn2023.0.2.noarch                                    
+  perl-File-Find-1.37-477.amzn2023.0.7.noarch                                   
+  perl-Git-2.50.1-1.amzn2023.0.1.noarch                                         
+  perl-TermReadKey-2.38-9.amzn2023.0.2.aarch64                                  
+  perl-lib-0.65-477.amzn2023.0.7.aarch64                                        
+  zlib-devel-1.2.11-33.amzn2023.0.5.aarch64                                     
+
+Complete!
+Cloning into 'bwa-mem2'...
+branch 'arm-graviton-optimization' set up to track 'origin/arm-graviton-optimization'.
+Switched to a new branch 'arm-graviton-optimization'
+Submodule 'ext/safestringlib' (https://github.com/intel/safestringlib.git) registered for path 'ext/safestringlib'
+Cloning into '/home/ec2-user/bwa-mem2/ext/safestringlib'...
+Submodule path 'ext/safestringlib': checked out 'f5b47df51e0733e487e55691005e77a1f04787da'
+Building BWA-MEM2...
+mkdir -p ext/safestringlib/obj ext/safestringlib/objtest
+make -C ext/safestringlib CC=gcc libsafestring.a
+make[1]: Entering directory '/home/ec2-user/bwa-mem2/ext/safestringlib'
+gcc -z noexecstack -z relo -z now -c -o obj/abort_handler_s.o safeclib/abort_handler_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+In file included from safeclib/abort_handler_s.c:32:
+safeclib/abort_handler_s.c: In function ‘abort_handler_s’:
+safeclib/safeclib_private.h:80:23: warning: implicit declaration of function ‘abort’ [-Wimplicit-function-declaration]
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+safeclib/abort_handler_s.c:33:1: note: include ‘<stdlib.h>’ or provide a declaration of ‘abort’
+   32 | #include "safeclib_private.h"
+  +++ |+#include <stdlib.h>
+   33 | 
+In file included from safeclib/abort_handler_s.c:32:
+safeclib/safeclib_private.h:80:23: warning: incompatible implicit declaration of built-in function ‘abort’ [-Wbuiltin-declaration-mismatch]
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+safeclib/safeclib_private.h:80:23: note: include ‘<stdlib.h>’ or provide a declaration of ‘abort’
+   80 | #define slabort()     abort()
+      |                       ^~~~~
+safeclib/abort_handler_s.c:72:9: note: in expansion of macro ‘slabort’
+   72 |         slabort();
+      |         ^~~~~~~
+gcc -z noexecstack -z relo -z now -c -o obj/stpcpy_s.o safeclib/stpcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastsame_s.o safeclib/strlastsame_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/ignore_handler_s.o safeclib/ignore_handler_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/stpncpy_s.o safeclib/stpncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strljustify_s.o safeclib/strljustify_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp16_s.o safeclib/memcmp16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcasecmp_s.o safeclib/strcasecmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+safeclib/strcasecmp_s.c: In function ‘strcasecmp_s’:
+safeclib/strcasecmp_s.c:132:13: warning: implicit declaration of function ‘toupper’ [-Wimplicit-function-declaration]
+  132 |         if (toupper(*udest) != toupper(*usrc)) {
+      |             ^~~~~~~
+safeclib/strcasecmp_s.c:35:1: note: include ‘<ctype.h>’ or provide a declaration of ‘toupper’
+   34 | #include "safe_str_lib.h"
+  +++ |+#include <ctype.h>
+   35 | 
+gcc -z noexecstack -z relo -z now -c -o obj/strncat_s.o safeclib/strncat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp32_s.o safeclib/memcmp32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcasestr_s.o safeclib/strcasestr_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+safeclib/strcasestr_s.c: In function ‘strcasestr_s’:
+safeclib/strcasestr_s.c:156:17: warning: implicit declaration of function ‘toupper’ [-Wimplicit-function-declaration]
+  156 |             if (toupper(dest[i]) != toupper(src[i])) {
+      |                 ^~~~~~~
+safeclib/strcasestr_s.c:35:1: note: include ‘<ctype.h>’ or provide a declaration of ‘toupper’
+   34 | #include "safe_str_lib.h"
+  +++ |+#include <ctype.h>
+   35 | 
+gcc -z noexecstack -z relo -z now -c -o obj/strncpy_s.o safeclib/strncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcmp_s.o safeclib/memcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcat_s.o safeclib/strcat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strnlen_s.o safeclib/strnlen_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy16_s.o safeclib/memcpy16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcmpfld_s.o safeclib/strcmpfld_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strnterminate_s.o safeclib/strnterminate_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy32_s.o safeclib/memcpy32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcmp_s.o safeclib/strcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strpbrk_s.o safeclib/strpbrk_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memcpy_s.o safeclib/memcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfldin_s.o safeclib/strcpyfldin_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strprefix_s.o safeclib/strprefix_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove16_s.o safeclib/memmove16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfldout_s.o safeclib/strcpyfldout_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strremovews_s.o safeclib/strremovews_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove32_s.o safeclib/memmove32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpyfld_s.o safeclib/strcpyfld_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strspn_s.o safeclib/strspn_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memmove_s.o safeclib/memmove_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcpy_s.o safeclib/strcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strstr_s.o safeclib/strstr_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/mem_primitives_lib.o safeclib/mem_primitives_lib.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strcspn_s.o safeclib/strcspn_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtok_s.o safeclib/strtok_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstchar_s.o safeclib/strfirstchar_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtolowercase_s.o safeclib/strtolowercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset16_s.o safeclib/memset16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstdiff_s.o safeclib/strfirstdiff_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strtouppercase_s.o safeclib/strtouppercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset32_s.o safeclib/memset32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strfirstsame_s.o safeclib/strfirstsame_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strzero_s.o safeclib/strzero_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memset_s.o safeclib/memset_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisalphanumeric_s.o safeclib/strisalphanumeric_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcpcpy_s.o safeclib/wcpcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero16_s.o safeclib/memzero16_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisascii_s.o safeclib/strisascii_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcscat_s.o safeclib/wcscat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero32_s.o safeclib/memzero32_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisdigit_s.o safeclib/strisdigit_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcscpy_s.o safeclib/wcscpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/memzero_s.o safeclib/memzero_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strishex_s.o safeclib/strishex_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsncat_s.o safeclib/wcsncat_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strislowercase_s.o safeclib/strislowercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsncpy_s.o safeclib/wcsncpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/safe_mem_constraint.o safeclib/safe_mem_constraint.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strismixedcase_s.o safeclib/strismixedcase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wcsnlen_s.o safeclib/wcsnlen_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strispassword_s.o safeclib/strispassword_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemcmp_s.o safeclib/wmemcmp_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/safe_str_constraint.o safeclib/safe_str_constraint.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strisuppercase_s.o safeclib/strisuppercase_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemcpy_s.o safeclib/wmemcpy_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastchar_s.o safeclib/strlastchar_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemmove_s.o safeclib/wmemmove_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/snprintf_support.o safeclib/snprintf_support.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/strlastdiff_s.o safeclib/strlastdiff_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+gcc -z noexecstack -z relo -z now -c -o obj/wmemset_s.o safeclib/wmemset_s.c -Iinclude -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+ar rcs libsafestring.a obj/abort_handler_s.o obj/stpcpy_s.o obj/strlastsame_s.o obj/ignore_handler_s.o obj/stpncpy_s.o obj/strljustify_s.o obj/memcmp16_s.o obj/strcasecmp_s.o obj/strncat_s.o obj/memcmp32_s.o obj/strcasestr_s.o obj/strncpy_s.o obj/memcmp_s.o obj/strcat_s.o obj/strnlen_s.o obj/memcpy16_s.o obj/strcmpfld_s.o obj/strnterminate_s.o obj/memcpy32_s.o obj/strcmp_s.o obj/strpbrk_s.o obj/memcpy_s.o obj/strcpyfldin_s.o obj/strprefix_s.o obj/memmove16_s.o obj/strcpyfldout_s.o obj/strremovews_s.o obj/memmove32_s.o obj/strcpyfld_s.o obj/strspn_s.o obj/memmove_s.o obj/strcpy_s.o obj/strstr_s.o obj/mem_primitives_lib.o obj/strcspn_s.o obj/strtok_s.o obj/strfirstchar_s.o obj/strtolowercase_s.o obj/memset16_s.o obj/strfirstdiff_s.o obj/strtouppercase_s.o obj/memset32_s.o obj/strfirstsame_s.o obj/strzero_s.o obj/memset_s.o obj/strisalphanumeric_s.o obj/wcpcpy_s.o obj/memzero16_s.o obj/strisascii_s.o obj/wcscat_s.o obj/memzero32_s.o obj/strisdigit_s.o obj/wcscpy_s.o obj/memzero_s.o obj/strishex_s.o obj/wcsncat_s.o obj/strislowercase_s.o obj/wcsncpy_s.o obj/safe_mem_constraint.o obj/strismixedcase_s.o obj/wcsnlen_s.o obj/strispassword_s.o obj/wmemcmp_s.o obj/safe_str_constraint.o obj/strisuppercase_s.o obj/wmemcpy_s.o obj/strlastchar_s.o obj/wmemmove_s.o obj/snprintf_support.o obj/strlastdiff_s.o obj/wmemset_s.o
+make[1]: Leaving directory '/home/ec2-user/bwa-mem2/ext/safestringlib'
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/fastmap.cpp -o src/fastmap.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/bwamem.h:39,
+                 from src/fastmap.h:45,
+                 from src/fastmap.cpp:39:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/bwamem.h:47,
+                 from src/fastmap.h:45,
+                 from src/fastmap.cpp:39:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bwtindex.cpp -o src/bwtindex.o
+In file included from src/simd/simd.h:29,
+                 from src/FMI_search.h:37,
+                 from src/bwtindex.cpp:41:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/utils.cpp -o src/utils.o
+In file included from src/utils.cpp:44:
+src/utils.cpp: In function ‘pair64_t ks_ksmall_128(size_t, pair64_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/utils.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(128, pair64_t, pair64_lt)
+      | ^~~~~~~~~~
+src/utils.cpp: In function ‘uint64_t ks_ksmall_64(size_t, uint64_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/utils.cpp:47:1: note: in expansion of macro ‘KSORT_INIT’
+   47 | KSORT_INIT(64,  uint64_t, ks_lt_generic)
+      | ^~~~~~~~~~
+src/utils.cpp: In function ‘int ks_getuntil2(kstream_t*, int, kstring_t*, int*, int)’:
+src/kseq.h:135:109: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  135 |                         memcpy_bwamem(str->s + str->l, str->m - str->l, ks->buf + ks->begin, i - ks->begin, __FILE__, __LINE__); \
+      |                                                                                                             ^~~~~~~~
+src/kseq.h:159:9: note: in expansion of macro ‘__KS_GETUNTIL’
+  159 |         __KS_GETUNTIL(__read, __bufsize)
+      |         ^~~~~~~~~~~~~
+src/kseq.h:237:9: note: in expansion of macro ‘KSTREAM_INIT’
+  237 |         KSTREAM_INIT(type_t, __read, 16384)                     \
+      |         ^~~~~~~~~~~~
+src/utils.cpp:50:1: note: in expansion of macro ‘KSEQ_INIT2’
+   50 | KSEQ_INIT2(, gzFile, err_gzread)
+      | ^~~~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/memcpy_bwamem.cpp -o src/memcpy_bwamem.o
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/kthread.cpp -o src/kthread.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/bwamem.h:39,
+                 from src/kthread.h:37,
+                 from src/kthread.cpp:32:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/bwamem.h:47,
+                 from src/kthread.h:37,
+                 from src/kthread.cpp:32:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/kstring.cpp -o src/kstring.o
+In file included from src/kstring.cpp:28:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/ksw.cpp -o src/ksw.o
+In file included from src/simd/simd.h:29,
+                 from src/ksw.h:29,
+                 from src/ksw.cpp:33:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bntseq.cpp -o src/bntseq.o
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bwamem.cpp -o src/bwamem.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/bwamem.h:39,
+                 from src/bwamem.cpp:32:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/bwamem.h:47,
+                 from src/bwamem.cpp:32:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+In file included from src/bwamem.h:50,
+                 from src/bwamem.cpp:32:
+src/bwamem.cpp: In function ‘bwtintv_t ks_ksmall_mem_intv(size_t, bwtintv_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:46:1: note: in expansion of macro ‘KSORT_INIT’
+   46 | KSORT_INIT(mem_intv, bwtintv_t, intv_lt)
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘SMEM ks_ksmall_mem_intv1(size_t, SMEM*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:48:1: note: in expansion of macro ‘KSORT_INIT’
+   48 | KSORT_INIT(mem_intv1, SMEM, intv_lt1)  // debug
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘mem_chain_t ks_ksmall_mem_flt(size_t, mem_chain_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:64:1: note: in expansion of macro ‘KSORT_INIT’
+   64 | KSORT_INIT(mem_flt, mem_chain_t, flt_lt)
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘mem_alnreg_t ks_ksmall_mem_ars2(size_t, mem_alnreg_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:152:1: note: in expansion of macro ‘KSORT_INIT’
+  152 | KSORT_INIT(mem_ars2, mem_alnreg_t, alnreg_slt2)
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘mem_alnreg_t ks_ksmall_mem_ars(size_t, mem_alnreg_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:155:1: note: in expansion of macro ‘KSORT_INIT’
+  155 | KSORT_INIT(mem_ars, mem_alnreg_t, alnreg_slt)
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘mem_alnreg_t ks_ksmall_mem_ars_hash(size_t, mem_alnreg_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:158:1: note: in expansion of macro ‘KSORT_INIT’
+  158 | KSORT_INIT(mem_ars_hash, mem_alnreg_t, alnreg_hlt)
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘mem_alnreg_t ks_ksmall_mem_ars_hash2(size_t, mem_alnreg_t*, size_t)’:
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:246:61: note: in expansion of macro ‘KSORT_SWAP’
+  246 |                                 if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                             ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:250:53: note: in expansion of macro ‘KSORT_SWAP’
+  250 |                         if (__sort_lt(*high, *mid)) KSORT_SWAP(type_t, *mid, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:251:53: note: in expansion of macro ‘KSORT_SWAP’
+  251 |                         if (__sort_lt(*high, *low)) KSORT_SWAP(type_t, *low, *high); \
+      |                                                     ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:252:52: note: in expansion of macro ‘KSORT_SWAP’
+  252 |                         if (__sort_lt(*low, *mid)) KSORT_SWAP(type_t, *mid, *low);      \
+      |                                                    ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:253:25: note: in expansion of macro ‘KSORT_SWAP’
+  253 |                         KSORT_SWAP(type_t, *mid, *(low+1));                                                     \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:259:33: note: in expansion of macro ‘KSORT_SWAP’
+  259 |                                 KSORT_SWAP(type_t, *ll, *hh);                                                   \
+      |                                 ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/ksort.h:78:52: warning: ISO C++17 does not allow ‘register’ storage class specifier [-Wregister]
+   78 | #define KSORT_SWAP(type_t, a, b) { register type_t t=(a); (a)=(b); (b)=t; }
+      |                                                    ^
+src/ksort.h:261:25: note: in expansion of macro ‘KSORT_SWAP’
+  261 |                         KSORT_SWAP(type_t, *low, *hh);                                                          \
+      |                         ^~~~~~~~~~
+src/bwamem.cpp:161:1: note: in expansion of macro ‘KSORT_INIT’
+  161 | KSORT_INIT(mem_ars_hash2, mem_alnreg_t, alnreg_hlt2)
+      | ^~~~~~~~~~
+src/bwamem.cpp: In function ‘int test_and_merge(const mem_opt_t*, int64_t, mem_chain_t*, const mem_seed_t*, int, int)’:
+src/bwamem.cpp:387:117: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  387 |                 memcpy_bwamem((char*) (auxSeedBuf), c->m * sizeof(mem_seed_t), c->seeds, c->n * sizeof(mem_seed_t), __FILE__, __LINE__);
+      |                                                                                                                     ^~~~~~~~
+src/bwamem.cpp: In function ‘void mem_process_seqs(mem_opt_t*, int64_t, int, bseq1_t*, const mem_pestat_t*, worker_t&)’:
+src/bwamem.cpp:1372:90: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+ 1372 |             memcpy_bwamem(pes, 4 * sizeof(mem_pestat_t), pes0, 4 * sizeof(mem_pestat_t), __FILE__, __LINE__); // if pes0 != NULL, set the insert-size
+      |                                                                                          ^~~~~~~~
+src/bwamem.cpp: In function ‘void* _mm_realloc(void*, int64_t, int64_t, int16_t)’:
+src/bwamem.cpp:1844:52: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+ 1844 |     memcpy_bwamem(nptr, nsize * dsize, ptr, csize, __FILE__, __LINE__);
+      |                                                    ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/profiling.cpp -o src/profiling.o
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bandedSWA.cpp -o src/bandedSWA.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/bandedSWA.cpp:30:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/FMI_search.cpp -o src/FMI_search.o
+In file included from src/simd/simd.h:29,
+                 from src/FMI_search.h:37,
+                 from src/FMI_search.cpp:32:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/read_index_ele.cpp -o src/read_index_ele.o
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bwamem_pair.cpp -o src/bwamem_pair.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/bwamem.h:39,
+                 from src/bwamem_pair.cpp:37:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/bwamem_pair.cpp:36:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/kswv.cpp -o src/kswv.o
+In file included from src/simd/simd.h:29,
+                 from src/ksw.h:29,
+                 from src/kswv.h:39,
+                 from src/kswv.cpp:33:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bwa.cpp -o src/bwa.o
+In file included from src/simd/simd.h:29,
+                 from src/ksw.h:29,
+                 from src/bwa.cpp:37:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/bwa.cpp:39:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/bwamem_extra.cpp -o src/bwamem_extra.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/bwamem.h:39,
+                 from src/bwamem_extra.cpp:33:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/bwamem.h:47,
+                 from src/bwamem_extra.cpp:33:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/kopen.cpp -o src/kopen.o
+src/kopen.cpp: In function ‘int ftp_open(const char*)’:
+src/kopen.cpp:257:69: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  257 |         memcpy_bwamem(pasv_ip, 4 * sizeof(int), v, 4 * sizeof(int), __FILE__, __LINE__);
+      |                                                                     ^~~~~~~~
+ar rcs libbwa.a src/fastmap.o src/bwtindex.o src/utils.o src/memcpy_bwamem.o src/kthread.o src/kstring.o src/ksw.o src/bntseq.o src/bwamem.o src/profiling.o src/bandedSWA.o src/FMI_search.o src/read_index_ele.o src/bwamem_pair.o src/kswv.o src/bwa.o src/bwamem_extra.o src/kopen.o
+g++ -c -g -O3 -fpermissive -march=native  -DENABLE_PREFETCH -DV17=1 -DMATE_SORT=0 -DSAIS=1  -Isrc -Iext/safestringlib/include src/main.cpp -o src/main.o
+In file included from src/simd/simd.h:29,
+                 from src/bandedSWA.h:40,
+                 from src/main.h:39,
+                 from src/main.cpp:32:
+src/simd/simd_arm_sve.h:21:6: warning: #warning "SVE support detected but not yet fully implemented. Falling back to NEON." [-Wcpp]
+   21 |     #warning "SVE support detected but not yet fully implemented. Falling back to NEON."
+      |      ^~~~~~~
+In file included from src/main.h:36,
+                 from src/main.cpp:32:
+src/kstring.h: In function ‘int kputsn(const char*, int, kstring_t*)’:
+src/kstring.h:69:55: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   69 |         memcpy_bwamem(s->s + s->l, s->m - s->l, p, l, __FILE__, __LINE__);
+      |                                                       ^~~~~~~~
+g++ -g -O3 -fpermissive -march=native   src/main.o libbwa.a -lpthread -lm -lz -L. -lbwa -Lext/safestringlib -lsafestring  -o bwa-mem2
+2.2.1
+./bwa-mem2: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=5d7f724a64ea7875256dc1374b3e7a0941ec68d8, for GNU/Linux 3.7.0, with debug_info, not stripped
+
+=== CPU Information ===
+Architecture:                            aarch64
+CPU(s):                                  4
+On-line CPU(s) list:                     0-3
+Thread(s) per core:                      1
+Core(s) per socket:                      4
+Socket(s):                               1
+Flags:                                   fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm paca pacg dcpodp svei8mm svebf16 i8mm bf16 dgh rng
+NUMA node0 CPU(s):                       0-3
+
+=== Memory ===
+               total        used        free      shared  buff/cache   available
+Mem:           7.6Gi       439Mi       6.4Gi       0.0Ki       730Mi       7.0Gi
+Swap:             0B          0B          0B
+
+Setup complete!
+[0;32m[2026-01-24 13:56:07][0m arm instance setup complete

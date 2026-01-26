@@ -29,18 +29,22 @@ NC='\033[0m' # No Color
 
 log() {
     echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
+    sync  # Flush to disk
 }
 
 error() {
     echo -e "${RED}[ERROR]${NC} $1" >&2
+    sync
 }
 
 warn() {
     echo -e "${YELLOW}[WARN]${NC} $1"
+    sync
 }
 
 info() {
     echo -e "${BLUE}[INFO]${NC} $1"
+    sync
 }
 
 check_prerequisites() {
@@ -124,10 +128,12 @@ launch_instance() {
 
     # Wait for SSH to be ready
     log "Waiting for SSH..."
+    local ssh_key="$HOME/.ssh/${AWS_KEY_NAME}"
+    [ ! -f "$ssh_key" ] && ssh_key="${ssh_key}.pem"
     local max_attempts=30
     local attempt=0
     while [ $attempt -lt $max_attempts ]; do
-        if ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@$public_ip "echo 'SSH ready'" &> /dev/null; then
+        if ssh -i "$ssh_key" -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@$public_ip "echo 'SSH ready'" &> /dev/null; then
             log "SSH connection established"
             break
         fi
@@ -150,7 +156,10 @@ setup_instance() {
 
     log "Setting up $arch instance..."
 
-    ssh ec2-user@$ip bash << 'REMOTE_SETUP'
+    local ssh_key="$HOME/.ssh/${AWS_KEY_NAME}"
+    [ ! -f "$ssh_key" ] && ssh_key="${ssh_key}.pem"
+
+    ssh -i "$ssh_key" ec2-user@$ip bash << 'REMOTE_SETUP'
 set -e
 
 # Update system
@@ -159,14 +168,15 @@ sudo yum update -y
 # Install dependencies
 sudo yum install -y gcc-c++ git make zlib-devel time
 
-# Clone repository
-git clone https://github.com/scttfrdmn/bwa-mem2-arm.git
-cd bwa-mem2-arm/bwa-mem2
+# Clone repository with ARM support
+git clone https://github.com/scttfrdmn/bwa-mem2.git
+cd bwa-mem2
 git checkout arm-graviton-optimization
+git submodule update --init --recursive
 
 # Build
 echo "Building BWA-MEM2..."
-make arch=native CXX=g++ clean all
+make arch=native CXX=g++ all
 
 # Verify build
 ./bwa-mem2 version
@@ -195,9 +205,12 @@ download_test_data() {
 
     log "Downloading test dataset to instance..."
 
-    ssh ec2-user@$ip bash << 'REMOTE_DATA'
+    local ssh_key="$HOME/.ssh/${AWS_KEY_NAME}"
+    [ ! -f "$ssh_key" ] && ssh_key="${ssh_key}.pem"
+
+    ssh -i "$ssh_key" ec2-user@$ip bash << 'REMOTE_DATA'
 set -e
-cd bwa-mem2-arm/bwa-mem2
+cd bwa-mem2
 
 # Create test directory
 mkdir -p test_data
@@ -237,9 +250,12 @@ run_test() {
 
     log "Running BWA-MEM2 test on $arch..."
 
-    ssh ec2-user@$ip bash << REMOTE_TEST
+    local ssh_key="$HOME/.ssh/${AWS_KEY_NAME}"
+    [ ! -f "$ssh_key" ] && ssh_key="${ssh_key}.pem"
+
+    ssh -i "$ssh_key" ec2-user@$ip bash << REMOTE_TEST
 set -e
-cd bwa-mem2-arm/bwa-mem2
+cd bwa-mem2
 
 echo "=== BWA-MEM2 $arch Test ==="
 echo "Architecture: \$(uname -m)"
@@ -286,16 +302,19 @@ download_results() {
 
     log "Downloading results from $arch instance..."
 
+    local ssh_key="$HOME/.ssh/${AWS_KEY_NAME}"
+    [ ! -f "$ssh_key" ] && ssh_key="${ssh_key}.pem"
+
     mkdir -p $output_dir
 
     # Download SAM files
-    scp ec2-user@$ip:bwa-mem2-arm/bwa-mem2/test_data/output_se_$arch.sam $output_dir/
-    scp ec2-user@$ip:bwa-mem2-arm/bwa-mem2/test_data/output_pe_$arch.sam $output_dir/
+    scp -i "$ssh_key" ec2-user@$ip:bwa-mem2/test_data/output_se_$arch.sam $output_dir/
+    scp -i "$ssh_key" ec2-user@$ip:bwa-mem2/test_data/output_pe_$arch.sam $output_dir/
 
     # Download logs
-    scp ec2-user@$ip:bwa-mem2-arm/bwa-mem2/index_$arch.log $output_dir/
-    scp ec2-user@$ip:bwa-mem2-arm/bwa-mem2/align_se_$arch.log $output_dir/
-    scp ec2-user@$ip:bwa-mem2-arm/bwa-mem2/align_pe_$arch.log $output_dir/
+    scp -i "$ssh_key" ec2-user@$ip:bwa-mem2/index_$arch.log $output_dir/
+    scp -i "$ssh_key" ec2-user@$ip:bwa-mem2/align_se_$arch.log $output_dir/
+    scp -i "$ssh_key" ec2-user@$ip:bwa-mem2/align_pe_$arch.log $output_dir/
 
     log "Results downloaded to $output_dir/"
 }
@@ -460,49 +479,42 @@ main() {
     echo "  ARM   ($ARM_INSTANCE):   $ARM_IP   (ID: $ARM_ID)"
     echo ""
 
-    # Setup all instances in parallel
-    setup_instance $INTEL_IP "intel" "g++" &
-    INTEL_SETUP_PID=$!
+    # Setup all instances sequentially (parallel SSH doesn't work well with nohup)
+    log "Setting up Intel instance..."
+    setup_instance $INTEL_IP "intel" "g++"
+    log "Intel setup complete"
 
-    setup_instance $AMD_IP "amd" "g++" &
-    AMD_SETUP_PID=$!
+    log "Setting up AMD instance..."
+    setup_instance $AMD_IP "amd" "g++"
+    log "AMD setup complete"
 
-    setup_instance $ARM_IP "arm" "g++" &
-    ARM_SETUP_PID=$!
+    log "Setting up ARM instance..."
+    setup_instance $ARM_IP "arm" "g++"
+    log "ARM setup complete"
 
-    wait $INTEL_SETUP_PID
-    wait $AMD_SETUP_PID
-    wait $ARM_SETUP_PID
+    # Download test data to all instances sequentially
+    log "Downloading test data to Intel instance..."
+    download_test_data $INTEL_IP
 
-    # Download test data to all instances
-    download_test_data $INTEL_IP &
-    INTEL_DATA_PID=$!
+    log "Downloading test data to AMD instance..."
+    download_test_data $AMD_IP
 
-    download_test_data $AMD_IP &
-    AMD_DATA_PID=$!
+    log "Downloading test data to ARM instance..."
+    download_test_data $ARM_IP
 
-    download_test_data $ARM_IP &
-    ARM_DATA_PID=$!
+    log "Test data downloaded to all instances"
 
-    wait $INTEL_DATA_PID
-    wait $AMD_DATA_PID
-    wait $ARM_DATA_PID
+    # Run tests sequentially
+    log "Running tests on Intel..."
+    run_test $INTEL_IP "intel" 4
 
-    # Run tests in parallel
-    log "Running tests on all three architectures (in parallel)..."
+    log "Running tests on AMD..."
+    run_test $AMD_IP "amd" 4
 
-    run_test $INTEL_IP "intel" 4 &
-    INTEL_TEST_PID=$!
+    log "Running tests on ARM..."
+    run_test $ARM_IP "arm" 4
 
-    run_test $AMD_IP "amd" 4 &
-    AMD_TEST_PID=$!
-
-    run_test $ARM_IP "arm" 4 &
-    ARM_TEST_PID=$!
-
-    wait $INTEL_TEST_PID
-    wait $AMD_TEST_PID
-    wait $ARM_TEST_PID
+    log "All tests complete"
 
     # Download and compare results
     OUTPUT_DIR="./test_results_$(date +%Y%m%d_%H%M%S)"
