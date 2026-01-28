@@ -1,0 +1,88 @@
+scripts/phase4-parallel-test.sh: line 6: : command not found
+scripts/phase4-parallel-test.sh: line 7: set: -: invalid option
+set: usage: set [--abefhkmnptuvxBCHP] [-o option] [arg ...]
+scripts/phase4-parallel-test.sh: line 8: : command not found
+scripts/phase4-parallel-test.sh: line 10: /Users/scttfrdmn/src/bwa-mem2-arm/.aws-test-config: No such file or directory
+scripts/phase4-parallel-test.sh: line 11: : command not found
+scripts/phase4-parallel-test.sh: line 15: : command not found
+==========================================
+Phase 4 Parallel Testing
+==========================================
+Testing on: Graviton 3E + Graviton 4
+Timestamp: 20260127-111432
+
+scripts/phase4-parallel-test.sh: line 22: : command not found
+=== Launching Graviton 3E (c7gn.xlarge) ===
+
+usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+To see help text, you can run:
+
+  aws help
+  aws <command> help
+  aws <command> <subcommand> help
+
+Unknown options: 
+
+scripts/phase4-parallel-test.sh: line 35: --region: command not found
+scripts/phase4-parallel-test.sh: line 36: --image-id: command not found
+scripts/phase4-parallel-test.sh: line 37: --instance-type: command not found
+scripts/phase4-parallel-test.sh: line 38: --key-name: command not found
+scripts/phase4-parallel-test.sh: line 39: --security-group-ids: command not found
+scripts/phase4-parallel-test.sh: line 40: --block-device-mappings: command not found
+scripts/phase4-parallel-test.sh: line 41: --tag-specifications: command not found
+scripts/phase4-parallel-test.sh: line 42: --query: command not found
+scripts/phase4-parallel-test.sh: line 43: --output: command not found
+Graviton 3E Instance: 
+scripts/phase4-parallel-test.sh: line 36: : command not found
+=== Launching Graviton 4 (c8g.xlarge) ===
+
+usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+To see help text, you can run:
+
+  aws help
+  aws <command> help
+  aws <command> <subcommand> help
+
+Unknown options: 
+
+scripts/phase4-parallel-test.sh: line 49: --region: command not found
+scripts/phase4-parallel-test.sh: line 50: --image-id: command not found
+scripts/phase4-parallel-test.sh: line 51: --instance-type: command not found
+scripts/phase4-parallel-test.sh: line 52: --key-name: command not found
+scripts/phase4-parallel-test.sh: line 53: --security-group-ids: command not found
+scripts/phase4-parallel-test.sh: line 54: --block-device-mappings: command not found
+scripts/phase4-parallel-test.sh: line 55: --tag-specifications: command not found
+scripts/phase4-parallel-test.sh: line 56: --query: command not found
+scripts/phase4-parallel-test.sh: line 57: --output: command not found
+Graviton 4 Instance: 
+scripts/phase4-parallel-test.sh: line 50: : command not found
+
+Waiting for instances to start...
+
+Waiter InstanceRunning failed: An error occurred (MissingParameter): The request must contain the parameter InstanceId
+scripts/phase4-parallel-test.sh: line 54: : command not found
+
+An error occurred (MissingParameter) when calling the DescribeInstances operation: The request must contain the parameter InstanceId
+
+An error occurred (MissingParameter) when calling the DescribeInstances operation: The request must contain the parameter InstanceId
+scripts/phase4-parallel-test.sh: line 58: : command not found
+Graviton 3E IP: 
+Graviton 4 IP: 
+
+scripts/phase4-parallel-test.sh: line 62: : command not found
+scripts/phase4-parallel-test.sh: line 64: /Users/scttfrdmn/src/bwa-mem2-arm/phase4-test-results/parallel-instances-20260127-111432.txt: No such file or directory
+scripts/phase4-parallel-test.sh: line 68: : command not found
+==========================================
+Instances launched successfully!
+Instance IDs saved to: /Users/scttfrdmn/src/bwa-mem2-arm/phase4-test-results/parallel-instances-20260127-111432.txt
+
+Next: SSH to each instance and run the test script
+
+Commands to run tests:
+  # Graviton 3E:
+  ssh -i ~/.ssh/cws-aws-west-2-key ec2-user@
+
+  # Graviton 4:
+  ssh -i ~/.ssh/cws-aws-west-2-key ec2-user@
+
+==========================================

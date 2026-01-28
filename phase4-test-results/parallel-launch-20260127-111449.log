@@ -1,0 +1,35 @@
+AWS Configuration Loaded:
+  Profile: aws
+  Region: us-west-2
+  Key: cws-aws-west-2-key
+  Security Group: sg-0e849a974f163c1d9 (graviton3-ssh)
+  Subnet: subnet-0a73ca94ed00cdaf9 (us-west-2a)
+==========================================
+Phase 4 Parallel Testing
+==========================================
+Testing on: Graviton 3E + Graviton 4
+Timestamp: 20260127-111449
+
+=== Launching Graviton 3E (c7gn.xlarge) ===
+Graviton 3E Instance: i-0512ea4eb0f0e221d
+=== Launching Graviton 4 (c8g.xlarge) ===
+Graviton 4 Instance: i-0067424481ee7c809
+
+Waiting for instances to start...
+Graviton 3E IP: 34.217.58.196
+Graviton 4 IP: 52.27.75.98
+
+==========================================
+Instances launched successfully!
+Instance IDs saved to: /Users/scttfrdmn/src/bwa-mem2-arm/phase4-test-results/parallel-instances-20260127-111449.txt
+
+Next: SSH to each instance and run the test script
+
+Commands to run tests:
+  # Graviton 3E:
+  ssh -i ~/.ssh/cws-aws-west-2-key ec2-user@34.217.58.196
+
+  # Graviton 4:
+  ssh -i ~/.ssh/cws-aws-west-2-key ec2-user@52.27.75.98
+
+==========================================

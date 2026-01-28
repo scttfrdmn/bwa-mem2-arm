@@ -1,0 +1,7 @@
+monitor-parallel-tests.sh: line 6: : command not found
+monitor-parallel-tests.sh: line 10: : command not found
+=== Phase 4 Parallel Test Monitor ===
+Started: Tue Jan 27 11:18:09 PST 2026
+
+monitor-parallel-tests.sh: line 14: : command not found
+monitor-parallel-tests.sh: line 53: syntax error: unexpected end of file
