@@ -1,0 +1,40 @@
+==========================================
+Minimap2 ARM Optimization Benchmark Results
+==========================================
+Date: 2026-02-03
+Platform: AWS Graviton 4 (c8g.4xlarge, Neoverse-V2)
+Test: 1M reads × 150bp aligned to chr22 reference
+
+BASELINE (-O2):
+  Time: 5.049770760s
+  CPU Utilization: 13.907 / 16 (86.9%)
+  IPC: 3.06
+  Instructions: 589,417,444,091
+  Branches: 95,886,643,494
+  Branch misses: 2.82%
+  L1 cache misses: 0.86%
+
+OPTIMIZED (-O3 -march=armv8.2-a+simd -mtune=generic):
+  Time: 4.585770212s
+  CPU Utilization: 13.778 / 16 (86.1%)
+  IPC: 3.16
+  Instructions: 547,560,497,881
+  Branches: 88,801,297,858
+  Branch misses: 3.09%
+  L1 cache misses: 0.98%
+
+IMPROVEMENT:
+  Wall time: 9.24% faster (465ms saved)
+  Instructions: 7.1% fewer
+  Branches: 7.4% fewer
+  IPC: 3.3% better
+
+CORRECTNESS:
+  ✅ 100% identical alignments (1,000,011 reads)
+  ✅ Core SAM fields (1-11) match exactly
+  Differences: Only timing statistics in log output
+
+CONCLUSION:
+  ✅ Optimization successful
+  ✅ No correctness issues
+  ✅ Hypothesis confirmed (expected 5-10%, got 9.24%)
